@@ -1,5 +1,6 @@
+// COPIED FROM: https://github.com/tsoding/zzzwe/blob/master/index.js
 class V2 {
-    constructor(x,y) {
+    constructor(x, y) {
         this.x = x;
         this.y = y;
     }
@@ -7,14 +8,32 @@ class V2 {
     add(that) {
         return new V2(this.x + that.x, this.y + that.y);
     }
+
     sub(that) {
         return new V2(this.x - that.x, this.y - that.y);
     }
-    scale(n) {
-        return new V2(this.x * n, this.y * n);
+
+    scale(s) {
+        return new V2(this.x * s, this.y * s);
+    }
+
+    len() {
+        return Math.sqrt(this.x * this.x + this.y * this.y);
+    }
+
+    normalize() {
+        const n = this.len();
+        return n === 0 ? new V2(0, 0) : new V2(this.x / n, this.y / n);
+    }
+
+    dist(that) {
+        return this.sub(that).len();
+    }
+
+    static polar(mag, dir) {
+        return new V2(Math.cos(dir) * mag, Math.sin(dir) * mag);
     }
 }
-
 function fillRect(context,pos,size,color = PLAYER_COLOR) {
     context.beginPath();
     context.rect(pos.x, pos.y,size,size)
@@ -28,8 +47,8 @@ function random(max) {
 
 const PLAYER_POS = new V2(10,10);
 const PLAYER_COLOR = "red";
-const PLAYER_SIZE = 100;
-const SPEED = 1000;
+const PLAYER_SIZE = 50;
+const SPEED = 500;
 
 
 const APPLE_SIZE = PLAYER_SIZE;
