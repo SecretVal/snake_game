@@ -111,24 +111,32 @@ class Apple {
         this.pos = pos;
         this.size = size;
         this.color = color;
-        this.eaten = false;
     }
 
     render(context) {
         fillRect(context, this.pos, this.size, this.color)
+    }
+
+    static random() {
+        return new Apple(new V2(random(window.innerWidth),random(window.innerHeight)));
     }
 }
 
 class Game {
     constructor() {
         this.player = new Player(PLAYER_POS)
-        this.apples = [];
+        this.apples = [Apple.random()];
     }
 
     update(dt) {
         this.player.update(dt);
 
-        // TODO: check if apples gets eaten by player
+        for (let [i, apple] of this.apples.entries()) {
+            if (Math.abs(this.player.pos.x - apple.pos.x) < PLAYER_SIZE && Math.abs(this.player.pos.y - apple.pos.y) < PLAYER_SIZE) {
+                this.apples.splice(i,1)
+                this.apples.push(Apple.random());
+            }
+        }
     }
 
     render(context) {
@@ -142,7 +150,6 @@ class Game {
         this.player.render(context);
 
         for (let i in this.apples) {
-            console.log(this.apples[i].eaten)
             this.apples[i].render(context);
         }
     }
@@ -150,9 +157,7 @@ class Game {
     keyDown(e) {
         if (e.code in directionMap) {
             this.player.keyDown(e)
-        } else if(e.code == "KeyB") {
-            this.apples.push(new Apple(new V2(random(window.innerWidth),random(window.innerHeight))))
-        }
+        } 
     }
 }
 
